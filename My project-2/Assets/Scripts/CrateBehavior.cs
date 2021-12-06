@@ -13,7 +13,7 @@ public class CrateBehavior : MonoBehaviour
     public int currentNote;
 
     public GameObject[] answers;
-    public Material[] feedbackTypes;
+    public FeedbackBehavior[] feedbacks;
 
 
     public GameBehavior gameManager;
@@ -25,6 +25,16 @@ public class CrateBehavior : MonoBehaviour
         //currentPhrase = gameManager.CurrentPhrase;
         currentNote = 0;
         sheetMusic = GameObject.Find("SheetMusic").GetComponent<SheetMusicBehavior>();
+
+        feedbacks = new FeedbackBehavior[8];
+        for (int i = 0; i < 8; i++)
+        {
+            int n = i + 1;
+            string name = "Feedback" + n.ToString();
+            Debug.Log(name);
+            feedbacks[i] = GameObject.Find(name).GetComponent<FeedbackBehavior>();
+        }
+
         //sheetMusic.updateSprite(index);
 
     }  
@@ -41,11 +51,11 @@ public class CrateBehavior : MonoBehaviour
 
 
     public void updateFeedback(bool correct){
-        /*if (correct) {
-            answers[currentNote].GetComponent<MeshRenderer>().material = feedbackTypes[0];
+        if (correct) {
+            feedbacks[currentNote].UpdateFeedback(0);
         } else {
-            answers[currentNote].GetComponent<MeshRenderer>().material = feedbackTypes[1];
-        }*/
+            feedbacks[currentNote].UpdateFeedback(2);
+        }
 
         currentNote += 1;
         if (currentNote < phrase.Length)
@@ -56,6 +66,10 @@ public class CrateBehavior : MonoBehaviour
             // SWITCH TO NEXT SHEET MUSIC AFTER FEW SECOND DELAY
             phrase = sheetMusic.updateSprite().Split(' ');
             currentNote = 0;
+            for (int i = 0; i < feedbacks.Length; i++)
+            {
+                feedbacks[i].UpdateFeedback(1);
+            }
         }
     }
 
